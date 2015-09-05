@@ -12,11 +12,13 @@ class Display
 
   def build_grid
     @board.rows.map.with_index do |row, i|
+      # byebug
       build_row(row, i)
     end
   end
 
   def build_row(row, i)
+    # byebug
     row.map.with_index do |piece, j|
       color_options = colors_for(i, j)
       piece.face.to_s.colorize(color_options)
@@ -34,10 +36,10 @@ class Display
       else
         bg = :light_blue
       end
-    elsif (i + j).odd?
-      bg = :light_black
+    elsif (i + j).even?
+      bg = :light_red
     else
-      bg = :light_white
+      bg = :light_black
     end
     { background: bg, color: :black }
   end
@@ -45,10 +47,8 @@ class Display
   def render
     system("clear")
     puts "#{@board.current_player}'s Turn!"
-    puts "#{@board.current_player} is in check." if @board.currently_in_check?(@board.current_player)
     puts "Arrow keys or WASD to move, Enter or Space to select."
     build_grid.each do |row|
-
       puts row.join
     end
     nil

@@ -13,18 +13,14 @@ class Game
   end
 
   def play
-    while true
+    loop do
       play_turn
     end
   end
 
   def play_turn
-
-    display.render
-
-    if @board.over?(@board.current_player)
-      Kernel.abort("#{@board.current_player} is checkmated!")
-    end
+    # display.render
+    Kernel.abort("#{@board.current_player} lost!") if @board.lost?
 
     start_pos = get_move
     until start_pos_ok?(start_pos)
@@ -50,8 +46,8 @@ class Game
   end
 
   def start_pos_ok?(start_pos)
-    start_pos && @board[start_pos].color == @board.current_player &&
-     @board.occupied?(start_pos) && !@board[start_pos].available_moves.empty?
+    start_pos && @board[start_pos].color == @board.current_player # => &&
+    # !@board[start_pos].available_moves.empty?
   end
 
   def second_selection_ok?(start_pos, destination)

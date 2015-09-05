@@ -41,10 +41,19 @@ class Checker < Piece
   end
 
   def get_moves
+
+    get_capture_moves
+    @valid_moves = moves
+  end
+
+  def base_moves
     moves = MOVE_DIFFS.map { |diff| [@pos[0] + diff[0], @pos[1] + diff[1]] }
     moves.select! { |move| move.all? { |dim| dim.between?(0, 7) } }
     moves.select! { |move| !@board.occupied?(move) }
-    @valid_moves = moves
+  end
+
+  def capture_moves
+
   end
 end
 

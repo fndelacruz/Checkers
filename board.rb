@@ -20,18 +20,18 @@ class Board
   end
 
   def initialize_moves
-    grid.flatten.each { |tile| tile.get_moves }
+    grid.flatten.each { |tile| tile.get_moves if tile.is_piece?}
   end
 
   def swap_players!
-    @current_player = @current_player == :white ? :black : :white
+    @current_player = @current_player == :red ? :black : :red
   end
 
   def populate_board
     (0..7).each do |v|
       (0..7).each do |h|
         pos = [v, h]
-        # byebug
+        # byebug if pos == [0, 7]
         if v <= 2 # black pieces
           self[pos] = Checker.new(:black, pos, self) if (v + h).odd?
         elsif v >= 5 # red pieces
@@ -52,6 +52,10 @@ class Board
     !self[pos].is_a?(EmptySquare)
   end
 
+  # def unoccupied?(pos)
+  #
+  # end
+
   def [](pos)
     x, y = pos
     grid[x][y]
@@ -71,9 +75,15 @@ class Board
   end
 
   def pieces
-    grid.flatten.select { |tile| tile.piece? }
+    grid.flatten.select { |tile| tile.is_piece? }
   end
 
+  def make_move(start_position, destination)
+    self[destination] = self[start_position]
+    self[destination].pos = destination
+    self[start_position] = EmptySquare.new(:none, start_position, self)
+    initialize_moves
+  end
   # def dup_board
   #   dup_board = Board.new
   #   dup_pieces = pieces(dup_board)

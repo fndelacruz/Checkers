@@ -47,14 +47,14 @@ class Game
 
   def start_pos_ok?(start_pos)
     start_pos && @board[start_pos].color == @board.current_player # => &&
-    # !@board[start_pos].available_moves.empty?
+    # !@board[start_pos].valid_moves.empty?
   end
 
   def second_selection_ok?(start_pos, destination)
     destination == start_pos || # allows deselection of start_pos
     destination &&
-    @board[start_pos].available_moves.include?(destination) &&
-    !@board.will_be_in_check?(start_pos, destination, @board.current_player)
+    @board[start_pos].valid_moves.include?(destination) #&&
+    # !@board.will_be_in_check?(start_pos, destination, @board.current_player)
   end
 end
 

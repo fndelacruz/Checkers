@@ -1,7 +1,7 @@
 load './slidable.rb'
 
 class Piece
-  attr_reader :face, :color, :available_moves
+  attr_reader :face, :color, :valid_moves
   attr_accessor :selected, :pos, :board
   def initialize(color, pos, board)
     @board = board
@@ -9,13 +9,16 @@ class Piece
     @face = ""
     @pos = pos
     @selected = false
-    @available_moves = []
+    @valid_moves = []
   end
 
-  def piece?
+  def is_piece?
     !is_a?(EmptySquare)
   end
 
+  # def in_bounds?
+  #   pos.all? { |x| x.between?(0, 7) }
+  # end
 end
 
 class EmptySquare < Piece
@@ -25,18 +28,26 @@ class EmptySquare < Piece
   end
 
   def get_moves
-    @available_moves = []
+    @valid_moves = []
   end
 end
 
 class Checker < Piece
+  MOVE_DIFFS = [[-1, -1], [-1, 1], [1, 1], [1, -1]]
+
   def initialize(color, pos, board)
     super(color, pos, board)
     @face = color == :black ? " B " : " R "
   end
 
   def get_moves
-    @available_moves = []
+    moves = MOVE_DIFFS.map { |diff| [@pos[0] + diff[0], @pos[1] + diff[1]] }
+    @valid_moves = moves
+
+    # @valid_moves = moves.select do |move|
+    #   !@board.occupied?(move) && move.all? { |dim| dim.between?(0, 7) }
+    # end
+
   end
 end
 

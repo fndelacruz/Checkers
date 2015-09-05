@@ -9,16 +9,18 @@ class Piece
     @face = ""
     @pos = pos
     @selected = false
-    @valid_moves = []
+    @valid_moves = {}
   end
 
   def is_piece?
     !is_a?(EmptySquare)
   end
 
-  # def in_bounds?
-  #   pos.all? { |x| x.between?(0, 7) }
-  # end
+  def enemy?(piece)
+    return true if (@color == :red && piece.color == :black) ||
+      (@color == :black && piece.color == :red)
+    false
+  end
 end
 
 class EmptySquare < Piece
@@ -33,30 +35,43 @@ class EmptySquare < Piece
 end
 
 class Checker < Piece
-  MOVE_DIFFS = [[-1, -1], [-1, 1], [1, 1], [1, -1]]
-
+  BASE_DIFFS = [[-1, -1], [-1, 1], [1, 1], [1, -1]]
+  JUMP_DIFFS = [[-2, -2], [-2, 2], [2, 2], [2, -2]]
   def initialize(color, pos, board)
     super(color, pos, board)
     @face = color == :black ? " B " : " R "
   end
 
   def get_moves
+    reset_moves
     base_moves
+    jump_moves
 
-    # get_capture_moves
+  end
+
+  def reset_moves
+    @valid_moves, @jump_moves = {}, {}
   end
 
   def base_moves
-    MOVE_DIFFS.each do |diff|
+    BASE_DIFFS.each do |diff|
       pos = [@pos[0] + diff[0], @pos[1] + diff[1]]
-      # byebug
-      @valid_moves << pos if pos.all? { |dim| dim.between?(0, 7) }
+      @valid_moves[pos] = nil if pos.all? { |dim| dim.between?(0, 7) }
     end
-    @valid_moves.select! { |move| !board.occupied?(move) }
+    @valid_moves.select! { |move, _| !board.occupied?(move) }
   end
 
-  def capture_moves
-
+  def jump_moves
+    x, y = @pos[0], @pos[1]
+    (0..3).each do |idx|
+      base_move = [x + BASE_DIFFS[idx][0], y + BASE_DIFFS[idx][1]]
+      next unless base_move.all? { |dim| dim.between?(0, 7) }
+      jump_move = [x + JUMP_DIFFS[idx][0], y + JUMP_DIFFS[idx][1]]
+      next unless jump_move.all? { |dim| dim.between?(0, 7) }
+      if enemy?(board[base_move]) && !board.occupied?(jump_move)
+        @valid_moves[jump_move] = base_move
+      end
+    end
   end
 end
 

@@ -31,7 +31,6 @@ class Board
     (0..7).each do |v|
       (0..7).each do |h|
         pos = [v, h]
-        # byebug if pos == [0, 7]
         if v <= 2 # black pieces
           self[pos] = Checker.new(:black, pos, self) if (v + h).odd?
         elsif v >= 5 # red pieces
@@ -78,12 +77,31 @@ class Board
     grid.flatten.select { |tile| tile.is_piece? }
   end
 
-  def make_move(start_position, destination)
-    self[destination] = self[start_position]
-    self[destination].pos = destination
-    self[start_position] = EmptySquare.new(:none, start_position, self)
+  def make_move(from_pos, to_pos)
+    base_pos = self[from_pos].valid_moves[to_pos]
+    base_pos.nil? ? base_move!(from_pos, to_pos) : jump_move!(from_pos, to_pos)
+  end
+
+  def base_move!(from_pos, to_pos)
+    self[to_pos] = self[from_pos]
+    self[to_pos].pos = to_pos
+    self[from_pos] = EmptySquare.new(:none, from_pos, self)
     initialize_moves
   end
+
+  def jump_move!(from_pos, to_pos)
+    base_pos = self[from_pos].valid_moves[to_pos]
+    self[to_pos] = self[from_pos]
+    self[to_pos].pos = to_pos
+    self[base_pos] = empty_tile(base_pos)
+    self[from_pos] = empty_tile(from_pos)
+    initialize_moves
+  end
+
+  def empty_tile(pos)
+    EmptySquare.new(:none, pos, self)
+  end
+
   # def dup_board
   #   dup_board = Board.new
   #   dup_pieces = pieces(dup_board)

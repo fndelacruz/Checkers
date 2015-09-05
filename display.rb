@@ -30,7 +30,7 @@ class Display
       bg = :green
     elsif @board[[i, j]].selected
       bg = :cyan
-    elsif @board[@cursor_pos].valid_moves.include?([i, j])
+    elsif @board[@cursor_pos].valid_moves.keys.include?([i, j])
       if (i + j).odd?
         bg = :blue
       else

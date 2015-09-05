@@ -53,7 +53,7 @@ class Game
   def second_selection_ok?(start_pos, destination)
     destination == start_pos || # allows deselection of start_pos
     destination &&
-    @board[start_pos].valid_moves.include?(destination) #&&
+    @board[start_pos].valid_moves.keys.include?(destination) #&&
     # !@board.will_be_in_check?(start_pos, destination, @board.current_player)
   end
 end

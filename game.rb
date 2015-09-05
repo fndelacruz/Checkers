@@ -66,8 +66,8 @@ end
 
 class InCheckError < StandardError
 end
-#
-# if $__FILE__ = $PROGRAM_NAME
-#   game = Game.new
-#   game.play
-# end
+
+if $__FILE__ = $PROGRAM_NAME
+  game = Game.new
+  game.play
+end

@@ -42,12 +42,9 @@ class Checker < Piece
 
   def get_moves
     moves = MOVE_DIFFS.map { |diff| [@pos[0] + diff[0], @pos[1] + diff[1]] }
+    moves.select! { |move| move.all? { |dim| dim.between?(0, 7) } }
+    moves.select! { |move| !@board.occupied?(move) }
     @valid_moves = moves
-
-    # @valid_moves = moves.select do |move|
-    #   !@board.occupied?(move) && move.all? { |dim| dim.between?(0, 7) }
-    # end
-
   end
 end
 

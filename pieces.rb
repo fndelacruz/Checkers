@@ -17,8 +17,8 @@ class Piece
   end
 
   def enemy?(piece)
-    return true if (@color == :red && piece.color == :black) ||
-      (@color == :black && piece.color == :red)
+    return true if (@color == :white && piece.color == :black) ||
+      (@color == :black && piece.color == :white)
     false
   end
 end
@@ -26,7 +26,7 @@ end
 class EmptySquare < Piece
   def initialize(color, pos, board)
     super(color, pos, board)
-    color == :black ? @face = "   " : @face = "   "
+    color == :black ? @face = "  " : @face = "  "
   end
 
   def get_moves
@@ -39,7 +39,7 @@ class Checker < Piece
   JUMP_DIFFS = [[-2, -2], [-2, 2], [2, 2], [2, -2]]
   def initialize(color, pos, board)
     super(color, pos, board)
-    @face = color == :black ? " B " : " R "
+    @face = color == :black ? "⚫ " : "⚪ "
   end
 
   def get_moves

@@ -37,7 +37,7 @@ class Display
         bg = :light_blue
       end
     elsif (i + j).even?
-      bg = :light_red
+      bg = :light_white
     else
       bg = :light_black
     end
@@ -46,7 +46,7 @@ class Display
 
   def render
     system("clear")
-    puts "#{@board.current_player}'s Turn!"
+    puts "Current player: #{@board.current_player}"
     puts "Arrow keys or WASD to move, Enter or Space to select."
     build_grid.each do |row|
       puts row.join

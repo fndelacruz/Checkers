@@ -8,7 +8,7 @@ class Board
 
   def initialize(trigger)
     @grid = Array.new(8) { Array.new(8) { EmptySquare.new(:gray, nil, self) } }
-    @current_player = :red
+    @current_player = :white
     setup(trigger)
   end
 
@@ -24,7 +24,7 @@ class Board
   end
 
   def swap_players!
-    @current_player = @current_player == :red ? :black : :red
+    @current_player = @current_player == :white ? :black : :white
   end
 
   def populate_board
@@ -34,7 +34,7 @@ class Board
         if v <= 2 # black pieces
           self[pos] = Checker.new(:black, pos, self) if (v + h).odd?
         elsif v >= 5 # red pieces
-          self[pos] = Checker.new(:red, pos, self) if (v + h).odd?
+          self[pos] = Checker.new(:white, pos, self) if (v + h).odd?
         end
       end
     end

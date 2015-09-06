@@ -30,7 +30,7 @@ class Display
       bg = :cyan
     elsif @board[@cursor_pos].valid_moves.keys.include?([i, j])
       if (i + j).odd?
-        bg = :blue
+        bg = :yellow
       else
         bg = :light_blue
       end
@@ -45,7 +45,8 @@ class Display
   def render
     system("clear")
     puts "Current player: #{@board.current_player.capitalize}"
-    puts "Arrow keys or WASD to move, Enter or Space to select."
+    puts "Arrow keys or WASD for cardinal moves. QEZC for diagonal moves."
+    puts "Enter or Space to select."
     build_grid.each do |row|
       puts row.join
     end

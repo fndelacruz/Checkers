@@ -3,10 +3,14 @@ require "io/console"
 module Cursorable
   KEYMAP = {
     " " => :space,
-    "w" => :left,
-    "a" => :down,
-    "s" => :up,
+    "w" => :up,
+    "a" => :left,
+    "s" => :down,
     "d" => :right,
+    "q" => :upleft,
+    "e" => :upright,
+    "z" => :downleft,
+    "c" => :downright,
     "\t" => :tab,
     "\r" => :return,
     "\n" => :newline,
@@ -24,7 +28,11 @@ module Cursorable
     left: [0, -1],
     right: [0, 1],
     up: [-1, 0],
-    down: [1, 0]
+    down: [1, 0],
+    upleft: [-1, -1],
+    upright: [-1, 1],
+    downleft: [1, -1],
+    downright: [1, 1]
   }
 
   def get_input
@@ -38,7 +46,7 @@ module Cursorable
       exit 0
     when :return, :space
       @cursor_pos
-    when :left, :right, :up, :down
+    when :left, :right, :up, :down, :upleft, :upright, :downleft, :downright
       update_pos(MOVES[key])
       nil
     else

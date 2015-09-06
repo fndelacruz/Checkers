@@ -1,8 +1,5 @@
-load 'board.rb'
-load 'display.rb'
-load 'cursorable.rb'
-load 'pieces.rb'
-require 'byebug'
+require './board.rb'
+require './display.rb'
 
 class Game
   attr_accessor :display, :board

@@ -1,7 +1,4 @@
-load './pieces.rb'
-#load 'colorize'
-#require 'cursorable'
-require 'byebug'
+require './pieces'
 
 class Board
   attr_accessor :grid, :current_player

@@ -1,5 +1,5 @@
 require 'colorize'
-load 'cursorable.rb'
+require './cursorable.rb'
 
 class Display
   include Cursorable
@@ -12,13 +12,11 @@ class Display
 
   def build_grid
     @board.rows.map.with_index do |row, i|
-      # byebug
       build_row(row, i)
     end
   end
 
   def build_row(row, i)
-    # byebug
     row.map.with_index do |piece, j|
       color_options = colors_for(i, j)
       piece.face.to_s.colorize(color_options)

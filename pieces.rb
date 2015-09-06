@@ -50,9 +50,8 @@ class Checker < Piece
 
   def get_moves
     reset_moves
-    base_moves
     jump_moves
-
+    base_moves if @valid_moves.empty?
   end
 
   def reset_moves
@@ -87,6 +86,7 @@ class Checker < Piece
         @valid_moves[jump_move] = base_move
       end
     end
+    true
   end
 
   def cannot_jump?

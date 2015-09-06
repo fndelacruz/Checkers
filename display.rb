@@ -44,12 +44,12 @@ class Display
 
   def render
     system("clear")
-    puts "Current player: #{@board.current_player}"
+    puts "Current player: #{@board.current_player.capitalize}"
     puts "Arrow keys or WASD to move, Enter or Space to select."
     build_grid.each do |row|
       puts row.join
     end
-    puts "#{@board.current_player} can jump!" if @board.player_can_jump?
+    puts "#{@board.current_player.capitalize} must jump!" if @board.player_can_jump?
     nil
   end
 end

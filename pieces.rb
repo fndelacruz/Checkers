@@ -31,6 +31,10 @@ class EmptySquare < Piece
   def get_moves
     @valid_moves = []
   end
+
+  def cannot_jump?
+    true
+  end
 end
 
 
@@ -84,13 +88,15 @@ class Checker < Piece
       end
     end
   end
+
+  def cannot_jump?
+    @valid_moves.values.all?(&:nil?)
+  end
+
+  def can_jump?
+    !cannot_jump?
+  end
 end
-
-
-
-
-
-
 
 # # This class was designed as if an ordinary Checker can move backward. But
 # # that's the case only if that Checker is a king. After I write the ordinary

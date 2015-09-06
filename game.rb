@@ -1,6 +1,6 @@
 require './board.rb'
 require './display.rb'
-
+require 'byebug'
 class Game
   attr_accessor :display, :board
 
@@ -19,17 +19,24 @@ class Game
     # display.render
     Kernel.abort("#{@board.current_player} lost!") if @board.lost?
 
-    start_pos = get_move
-    until start_pos_ok?(start_pos)
-      start_pos = get_move
-    end
+
+    start_pos = get_move until start_pos_ok?(start_pos)
+
     @board[start_pos].selected = true
 
     destination = get_move until second_selection_ok?(start_pos, destination)
     @board[start_pos].selected = false
-    return if start_pos == destination # allows deselection of start_pos
+    return if start_pos == destination
 
-    board.make_move(start_pos, destination)
+    jump_flag = board.make_move(start_pos, destination)
+
+    if jump_flag
+      if @board[destination].can_jump?
+        play_turn
+        @board.swap_players!
+      end
+    end
+
     @board.swap_players!
   end
 
@@ -43,8 +50,17 @@ class Game
   end
 
   def start_pos_ok?(start_pos)
-    start_pos && @board[start_pos].color == @board.current_player # => &&
-    # !@board[start_pos].valid_moves.empty?
+    start_pos &&
+    @board[start_pos].color == @board.current_player &&
+    jumper_if_needed?(start_pos)
+  end
+
+  def jumper_if_needed?(start_pos)
+    if @board.player_can_jump?
+      @board[start_pos].can_jump? ? true : false
+    else
+      true
+    end
   end
 
   def second_selection_ok?(start_pos, destination)

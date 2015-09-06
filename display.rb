@@ -49,7 +49,7 @@ class Display
     build_grid.each do |row|
       puts row.join
     end
+    puts "#{@board.current_player} can jump!" if @board.player_can_jump?
     nil
   end
-
 end

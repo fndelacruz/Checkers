@@ -78,7 +78,7 @@ class Board
     grid.flatten.select { |tile| tile.color == @current_player }
   end
 
-  def make_move(from_pos, to_pos)
+  def make_move!(from_pos, to_pos)
     base_pos = self[from_pos].valid_moves[to_pos]
     base_pos.nil? ? base_move!(from_pos, to_pos) : jump_move!(from_pos, to_pos)
   end
@@ -88,6 +88,7 @@ class Board
     self[to_pos].pos = to_pos
     self[from_pos] = EmptySquare.new(:none, from_pos, self)
     initialize_moves
+    self[to_pos].promote! if self[to_pos].promotable?
     false
   end
 
@@ -98,6 +99,7 @@ class Board
     self[base_pos] = empty_tile(base_pos)
     self[from_pos] = empty_tile(from_pos)
     initialize_moves
+    self[to_pos].promote! if self[to_pos].promotable?
     true
   end
 

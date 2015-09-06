@@ -17,20 +17,19 @@ class Game
 
   def play_turn
     # display.render
-    Kernel.abort("#{@board.current_player} lost!") if @board.lost?
-
+    gameover if @board.lost?
 
     start_pos = get_move until start_pos_ok?(start_pos)
-
     @board[start_pos].selected = true
 
     destination = get_move until second_selection_ok?(start_pos, destination)
     @board[start_pos].selected = false
     return if start_pos == destination
 
-    jump_flag = board.make_move(start_pos, destination)
+    jump_flag = board.make_move!(start_pos, destination)
 
     if jump_flag
+      # byebug
       if @board[destination].can_jump?
         play_turn
         @board.swap_players!
@@ -38,6 +37,11 @@ class Game
     end
 
     @board.swap_players!
+  end
+
+  def gameover
+    display.render
+    Kernel.abort("#{@board.current_player.capitalize} lost!")
   end
 
   def get_move

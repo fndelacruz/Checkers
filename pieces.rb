@@ -20,6 +20,14 @@ class Piece
       (@color == :black && piece.color == :white)
     false
   end
+
+  def cannot_jump?
+    @valid_moves.values.all?(&:nil?)
+  end
+
+  def can_jump?
+    !cannot_jump?
+  end
 end
 
 class EmptySquare < Piece
@@ -89,56 +97,61 @@ class Checker < Piece
     true
   end
 
-  def cannot_jump?
-    @valid_moves.values.all?(&:nil?)
+
+
+  def promote!
+    @board[pos] = King.new(color, pos, board)
   end
 
-  def can_jump?
-    !cannot_jump?
+  def promotable?
+    pos[0] == 0 || pos[0] == 7
   end
 end
 
-# # This class was designed as if an ordinary Checker can move backward. But
-# # that's the case only if that Checker is a king. After I write the ordinary
-# # Checker class, uncomment the below code and name it KingChecker
-# #
-# class Checker < Piece
-#   BASE_DIFFS = [[-1, -1], [-1, 1], [1, 1], [1, -1]]
-#   JUMP_DIFFS = [[-2, -2], [-2, 2], [2, 2], [2, -2]]
-#   def initialize(color, pos, board)
-#     super(color, pos, board)
-#     @face = color == :black ? "⚫ " : "⚪ "
-#   end
+# This class was designed as if an ordinary Checker can move backward. But
+# that's the case only if that Checker is a king. After I write the ordinary
+# Checker class, uncomment the below code and name it KingChecker
 #
-#   def get_moves
-#     reset_moves
-#     base_moves
-#     jump_moves
-#
-#   end
-#
-#   def reset_moves
-#     @valid_moves, @jump_moves = {}, {}
-#   end
-#
-#   def base_moves
-#     BASE_DIFFS.each do |diff|
-#       pos = [@pos[0] + diff[0], @pos[1] + diff[1]]
-#       @valid_moves[pos] = nil if pos.all? { |dim| dim.between?(0, 7) }
-#     end
-#     @valid_moves.select! { |move, _| !board.occupied?(move) }
-#   end
-#
-#   def jump_moves
-#     x, y = @pos[0], @pos[1]
-#     (0..3).each do |idx|
-#       base_move = [x + BASE_DIFFS[idx][0], y + BASE_DIFFS[idx][1]]
-#       next unless base_move.all? { |dim| dim.between?(0, 7) }
-#       jump_move = [x + JUMP_DIFFS[idx][0], y + JUMP_DIFFS[idx][1]]
-#       next unless jump_move.all? { |dim| dim.between?(0, 7) }
-#       if enemy?(board[base_move]) && !board.occupied?(jump_move)
-#         @valid_moves[jump_move] = base_move
-#       end
-#     end
-#   end
-# end
+class King < Piece
+  BASE_DIFFS = [[-1, -1], [-1, 1], [1, 1], [1, -1]]
+  JUMP_DIFFS = [[-2, -2], [-2, 2], [2, 2], [2, -2]]
+  def initialize(color, pos, board)
+    super(color, pos, board)
+    @face = color == :black ? "B " : "W "
+  end
+
+  def get_moves
+    reset_moves
+    jump_moves
+    base_moves if @valid_moves.empty?
+  end
+
+  def reset_moves
+    @valid_moves, @jump_moves = {}, {}
+  end
+
+  def base_moves
+    BASE_DIFFS.each do |diff|
+      pos = [@pos[0] + diff[0], @pos[1] + diff[1]]
+      @valid_moves[pos] = nil if pos.all? { |dim| dim.between?(0, 7) }
+    end
+    @valid_moves.select! { |move, _| !board.occupied?(move) }
+  end
+
+  def jump_moves
+    x, y = @pos[0], @pos[1]
+    (0..3).each do |idx|
+      base_move = [x + BASE_DIFFS[idx][0], y + BASE_DIFFS[idx][1]]
+      next unless base_move.all? { |dim| dim.between?(0, 7) }
+      jump_move = [x + JUMP_DIFFS[idx][0], y + JUMP_DIFFS[idx][1]]
+      next unless jump_move.all? { |dim| dim.between?(0, 7) }
+      if enemy?(board[base_move]) && !board.occupied?(jump_move)
+        @valid_moves[jump_move] = base_move
+      end
+    end
+  end
+
+  def promotable?
+    false
+  end
+end
